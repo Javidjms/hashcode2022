@@ -25,3 +25,12 @@ class Client:
         return "Client #{}".format(self.id)
 
 
+def get_scoring(clients, ingredients):
+    approved_client_count = 0
+    for client in clients:
+        is_potential_client = client.approve_pizza(ingredients)
+        if is_potential_client:
+            approved_client_count += 1
+    return approved_client_count
+
+
