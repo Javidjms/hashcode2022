@@ -213,6 +213,80 @@ def choose_ingredients_solver_with_count_dict_bis_helper(
     return (best_combination, best_approved_client_count)
 
 
+def choose_ingredients_solver_with_count_dict_bis_2_helper(
+    clients,
+    ingredients,
+    approved_client_count,
+    liked_ingredients_count_dict,
+    disliked_ingredients_count_dict,
+):
+    # Keep ingredients that the ratio like/dislike is negative
+    lowest_ratio = 0
+    ingredient_to_remove = None
+    for ingredient in ingredients:
+        if len(disliked_ingredients_count_dict[ingredient]):
+            ratio = len(liked_ingredients_count_dict[ingredient]) - \
+                len(disliked_ingredients_count_dict[ingredient])
+            if ratio <= 0 and ratio <= lowest_ratio:
+                lowest_ratio = ratio
+                ingredient_to_remove = ingredient
+
+    if ingredient_to_remove:
+        # Remove ingredients
+        new_ingredients = set(ingredients)
+        new_ingredients.remove(ingredient_to_remove)
+
+        # Remove clients
+        new_clients = set(clients)
+        clients_to_remove = \
+            liked_ingredients_count_dict[ingredient_to_remove]
+        clients_to_add = \
+            disliked_ingredients_count_dict[ingredient_to_remove]
+
+        for client_to_remove in clients_to_remove:
+            new_clients.remove(client_to_remove)
+
+        # Update approved_client_count
+        new_approved_client_count = \
+            approved_client_count + len(clients_to_add) - len(clients_to_remove)
+
+        # Update count_dict
+        new_liked_ingredients_count_dict = dict(liked_ingredients_count_dict)
+        new_disliked_ingredients_count_dict = dict(disliked_ingredients_count_dict)
+
+        new_liked_ingredients_count_dict.pop(ingredient_to_remove)
+        new_disliked_ingredients_count_dict.pop(ingredient_to_remove)
+
+        for client_to_remove in clients_to_remove:
+            for ingredient in client_to_remove.liked_ingredients:
+                if ingredient in new_liked_ingredients_count_dict:
+                    new_liked_ingredients_count_dict[ingredient] = \
+                        list(new_liked_ingredients_count_dict[ingredient])
+                    new_liked_ingredients_count_dict[ingredient].remove(client_to_remove)
+
+            for ingredient in client_to_remove.disliked_ingredients:
+                if ingredient in new_disliked_ingredients_count_dict:
+                    new_disliked_ingredients_count_dict[ingredient] = \
+                        list(new_disliked_ingredients_count_dict[ingredient])
+                    new_disliked_ingredients_count_dict[ingredient].remove(client_to_remove)
+
+        return choose_ingredients_solver_with_count_dict_bis_2_helper(
+            new_clients,
+            new_ingredients,
+            new_approved_client_count,
+            new_liked_ingredients_count_dict,
+            new_disliked_ingredients_count_dict,
+        )
+    else:
+        return (
+            clients,
+            ingredients,
+            approved_client_count,
+            liked_ingredients_count_dict,
+            disliked_ingredients_count_dict,
+        )
+
+
 def choose_ingredients_solver_with_count_dict_bis(clients, ingredients):
     # Count the approved client with the generated ingredients
     initial_approved_client_count = get_scoring(clients, ingredients)
@@ -224,5 +298,39 @@ def choose_ingredients_solver_with_count_dict_bis(clients, ingredients):
             "max": initial_approved_client_count,
         }
     )
+
+
+def choose_ingredients_solver_with_count_dict_bis_2(clients, ingredients):
+    clients = set(clients)
+    ingredients = set(ingredients)
+    # Count the approved client with the generated ingredients
+    initial_approved_client_count = get_scoring(clients, ingredients)
+
+    liked_ingredients_count_dict = {}
+    disliked_ingredients_count_dict = {}
+
+    # Generate intial hashmap with empty list
+    for ingredient in ingredients:
+        liked_ingredients_count_dict[ingredient] = set()
+        disliked_ingredients_count_dict[ingredient] = set()
+
+    # Iterate each clients in order to fill hashmap liked and disliked values
+    for client in clients:
+        for ingredient in client.liked_ingredients:
+            if ingredient in ingredients:
+                liked_ingredients_count_dict[ingredient].add(client)
+
+        for ingredient in client.disliked_ingredients:
+            if ingredient in ingredients:
+                disliked_ingredients_count_dict[ingredient].add(client)
+
+    results = choose_ingredients_solver_with_count_dict_bis_2_helper(
+        clients,
+        ingredients,
+        initial_approved_client_count,
+        liked_ingredients_count_dict,
+        disliked_ingredients_count_dict,
+    )
+    return (list(results[1]), results[2])
 
 
