@@ -121,3 +121,32 @@ def choose_ingredients_solver_brute_bis(clients, ingredients):
     return (best_combination, best_approved_client_count)
 
 
+def choose_ingredients_solver_with_count_dict(clients, ingredients):
+    liked_ingredients_count_dict = {}
+    disliked_ingredients_count_dict = {}
+
+    # Generate intial hashmap with zeros
+    for ingredient in ingredients:
+        liked_ingredients_count_dict[ingredient] = 0
+        disliked_ingredients_count_dict[ingredient] = 0
+
+    # Iterate each clients in order to fill hashmap liked and disliked values
+    for client in clients:
+        for liked_ingredient in client.liked_ingredients:
+            liked_ingredients_count_dict[liked_ingredient] += 1
+
+        for disliked_ingredient in client.disliked_ingredients:
+            disliked_ingredients_count_dict[disliked_ingredient] += 1
+
+    # Keep ingredients that the ratio like/dislike is highest
+    chosen_ingredients = []
+    for ingredient in ingredients:
+        if liked_ingredients_count_dict[ingredient] \
+          > disliked_ingredients_count_dict[ingredient]:
+            chosen_ingredients.append(ingredient)
+
+    # Count the approved client with the generated chosen_ingredients
+    approved_client_count = get_scoring(clients, chosen_ingredients)
+    return (chosen_ingredients, approved_client_count)
+
+
