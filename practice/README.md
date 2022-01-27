@@ -18,8 +18,8 @@
 
 ## E - High Bonus
 
-* 840 pt
+* 1 681 pt
 
 ## Total
 
-* 2 549 pt
+* 3 390 pt
