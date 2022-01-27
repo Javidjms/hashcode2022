@@ -150,3 +150,79 @@ def choose_ingredients_solver_with_count_dict(clients, ingredients):
     return (chosen_ingredients, approved_client_count)
 
 
+def choose_ingredients_solver_with_count_dict_bis_helper(
+    clients,
+    ingredients,
+    min_max_approved_client_count,
+):
+    min_approved_client_count = min_max_approved_client_count["min"]
+    max_approved_client_count = min_max_approved_client_count["max"]
+    # print(len(clients), len(ingredients), min_approved_client_count, max_approved_client_count)
+
+    # Count the approved client with the generated ingredients
+    approved_client_count = get_scoring(clients, ingredients)
+
+    if approved_client_count < min_approved_client_count:
+        return (ingredients, approved_client_count)
+
+    if approved_client_count > max_approved_client_count:
+        min_max_approved_client_count["max"] = approved_client_count
+
+    liked_ingredients_count_dict = {}
+    disliked_ingredients_count_dict = {}
+
+    # Generate intial hashmap with empty list
+    for ingredient in ingredients:
+        liked_ingredients_count_dict[ingredient] = 0
+        disliked_ingredients_count_dict[ingredient] = 0
+
+    # Iterate each clients in order to fill hashmap liked and disliked values
+    for client in clients:
+        for ingredient in client.liked_ingredients:
+            if ingredient in ingredients:
+                liked_ingredients_count_dict[ingredient] += 1
+
+        for ingredient in client.disliked_ingredients:
+            if ingredient in ingredients:
+                disliked_ingredients_count_dict[ingredient] += 1
+
+    # Keep ingredients that the ratio like/dislike is negative
+    ingredients_to_remove = []
+    for ingredient in ingredients:
+        if disliked_ingredients_count_dict[ingredient] \
+          and (
+              liked_ingredients_count_dict[ingredient] <=
+              disliked_ingredients_count_dict[ingredient]
+          ):
+            ingredients_to_remove.append(ingredient)
+
+    best_combination = ingredients
+    best_approved_client_count = approved_client_count
+    if len(ingredients_to_remove):
+        for ingredient_to_remove in ingredients_to_remove:
+            new_ingredients = [i for i in ingredients if i not in [ingredient_to_remove]]
+            (chosen_ingredients, approved_client_count) = \
+                choose_ingredients_solver_with_count_dict_bis_helper(
+                    clients,
+                    new_ingredients,
+                    min_max_approved_client_count,
+                )
+            if best_approved_client_count < approved_client_count:
+                best_combination = chosen_ingredients
+                best_approved_client_count = approved_client_count
+    return (best_combination, best_approved_client_count)
+
+
+def choose_ingredients_solver_with_count_dict_bis(clients, ingredients):
+    # Count the approved client with the generated ingredients
+    initial_approved_client_count = get_scoring(clients, ingredients)
+    return choose_ingredients_solver_with_count_dict_bis_helper(
+        clients,
+        ingredients,
+        {
+            "min": initial_approved_client_count,
+            "max": initial_approved_client_count,
+        }
+    )
+
+
