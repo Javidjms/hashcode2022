@@ -74,3 +74,14 @@ def plot_ingredients(clients, ingredients):
         print('CLIENT {}: {}'.format(i, output))
 
 
+def plot_potential_clients(clients, chosen_ingredients):
+    for i, client in enumerate(clients):
+        is_potential_client = client.approve_pizza(chosen_ingredients)
+        print('CLIENT {}: Results : {} - {} || {}'.format(
+            i,
+            is_potential_client,
+            client.liked_ingredients,
+            client.disliked_ingredients,
+        ))
+
+
