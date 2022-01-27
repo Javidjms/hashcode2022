@@ -1,0 +1,11 @@
+version: "3.4"
+services:
+  hashcode:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base-dev
+    volumes:
+      - .:/data/
+    environment:
+      - TZ=Europe/Paris
