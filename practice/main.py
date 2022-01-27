@@ -390,3 +390,11 @@ def choose_ingredients_solver_with_chain_bis(clients, ingredients):
     return (current_ingredients, approved_client_count)
 
 
+def write_file(chosen_ingredients, filename):
+    with open(filename, 'w') as f:
+        chosen_ingredients_length = len(chosen_ingredients)
+        f.write('{} '.format(chosen_ingredients_length))
+        for ingredient in chosen_ingredients:
+            f.write('{} '.format(ingredient))
+
+
