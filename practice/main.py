@@ -103,3 +103,21 @@ def choose_ingredients_solver_brute(clients, ingredients):
     return (best_combination, best_approved_client_count)
 
 
+def choose_ingredients_solver_brute_bis(clients, ingredients):
+    # Generate the n-1 length combination
+    depth = 0
+    length = len(ingredients) - depth
+    combinations = list(itertools.combinations(ingredients, length))
+
+    best_combination = None
+    best_approved_client_count = 0
+    # Iterate all combination and keep the max approved_client_count
+    for combination in combinations:
+        approved_client_count = get_scoring(clients, combination)
+
+        if best_approved_client_count < approved_client_count:
+            best_combination = combination
+            best_approved_client_count = approved_client_count
+    return (best_combination, best_approved_client_count)
+
+
