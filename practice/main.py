@@ -85,3 +85,21 @@ def plot_potential_clients(clients, chosen_ingredients):
         ))
 
 
+def choose_ingredients_solver_brute(clients, ingredients):
+    # Generate all combinations with itertools
+    combinations = []
+    for i in range(1, len(ingredients)+1):
+        combinations += list(itertools.combinations(ingredients, i))
+
+    best_combination = None
+    best_approved_client_count = 0
+    # Iterate all combination and keep the max approved_client_count
+    for combination in combinations:
+        approved_client_count = get_scoring(clients, combination)
+
+        if best_approved_client_count < approved_client_count:
+            best_combination = combination
+            best_approved_client_count = approved_client_count
+    return (best_combination, best_approved_client_count)
+
+
