@@ -398,3 +398,27 @@ def write_file(chosen_ingredients, filename):
             f.write('{} '.format(ingredient))
 
 
+def main():
+    if len(sys.argv) < 3:
+        sys.exit('Syntax: %s <filename> <output>' % sys.argv[0])
+
+    print('Running on file: %s' % sys.argv[1])
+    clients, ingredients = get_clients_and_ingredients_from_file(sys.argv[1])
+
+    # plot_ingredients(clients, ingredients)
+
+    try:
+        (chosen_ingredients, potential_client_count) =\
+            choose_ingredients_solver_with_chain_bis(clients, ingredients)
+    except KeyboardInterrupt:
+        pass
+
+    print('chosen_ingredients', chosen_ingredients)
+    print('potential_client_count', potential_client_count)
+    # plot_potential_clients(clients, chosen_ingredients)
+
+    write_file(chosen_ingredients, sys.argv[2])
+
+
+if __name__ == '__main__':
+    main()
