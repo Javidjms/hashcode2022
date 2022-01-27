@@ -60,3 +60,17 @@ def get_clients_and_ingredients_from_file(filename):
     return clients, ingredients
 
 
+def plot_ingredients(clients, ingredients):
+    print('Ingredients', ingredients)
+    for i, client in enumerate(clients):
+        output = ''
+        for ingredient in ingredients:
+            if ingredient in client.liked_ingredients:
+                output += 'L'
+            elif ingredient in client.disliked_ingredients:
+                output += 'D'
+            else:
+                output += '.'
+        print('CLIENT {}: {}'.format(i, output))
+
+
