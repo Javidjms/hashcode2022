@@ -34,3 +34,29 @@ def get_scoring(clients, ingredients):
     return approved_client_count
 
 
+def get_clients_and_ingredients_from_file(filename):
+    clients = []
+    ingredients = set()
+    with open(filename, 'r') as f:
+        # Parse the initial first line
+        potential_client_count = int(f.readline())
+
+        for i in range(potential_client_count):
+            # Parse the first line for the liked ingredient line
+            line = f.readline().split()
+            liked_ingredients = line[1:]
+            for ingredient in liked_ingredients:
+                ingredients.add(ingredient)
+
+            # Parse the second line for the disliked ingredient line
+            line = f.readline().split()
+            disliked_ingredients = line[1:]
+            for ingredient in disliked_ingredients:
+                ingredients.add(ingredient)
+
+            client = Client(i, liked_ingredients, disliked_ingredients)
+            clients.append(client)
+        ingredients = list(ingredients)
+    return clients, ingredients
+
+
