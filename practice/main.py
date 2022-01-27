@@ -356,3 +356,37 @@ def choose_ingredients_solver_with_chain(clients, ingredients):
     return (current_ingredients, approved_client_count)
 
 
+def choose_ingredients_solver_with_chain_bis(clients, ingredients):
+    clients = set(clients)
+    ingredients = set(ingredients)
+
+    approved_client_count = 0
+    current_ingredients = set()
+    forbidden_ingredients = set()
+    for client in clients:
+        has_break = False
+        for disliked_ingredient in client.disliked_ingredients:
+            if disliked_ingredient in current_ingredients:
+                has_break = True
+                break
+
+        if has_break:
+            continue
+
+        for liked_ingredient in client.liked_ingredients:
+            if liked_ingredient in forbidden_ingredients:
+                has_break = True
+                break
+
+        if has_break:
+            continue
+
+        for disliked_ingredient in client.disliked_ingredients:
+            forbidden_ingredients.add(disliked_ingredient)
+
+        for liked_ingredient in client.liked_ingredients:
+            current_ingredients.add(liked_ingredient)
+        approved_client_count += 1
+    return (current_ingredients, approved_client_count)
+
+
