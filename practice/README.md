@@ -12,14 +12,14 @@
 
 * 5 pt
 
-## D - Metropolis
+## D - Difficult
 
 * 1 697 pt
 
-## E - High Bonus
+## E - Elaborate
 
-* 1 681 pt
+* 1 844 pt
 
 ## Total
 
-* 3 390 pt
+* 3 553 pt

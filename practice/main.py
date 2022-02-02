@@ -1,4 +1,5 @@
 import sys
+import random
 import itertools
 
 
@@ -95,6 +96,7 @@ def choose_ingredients_solver_brute(clients, ingredients):
     best_approved_client_count = 0
     # Iterate all combination and keep the max approved_client_count
     for combination in combinations:
+        print('COMBINATION', combination)
         approved_client_count = get_scoring(clients, combination)
 
         if best_approved_client_count < approved_client_count:
@@ -157,6 +159,7 @@ def choose_ingredients_solver_with_count_dict_bis_helper(
 ):
     min_approved_client_count = min_max_approved_client_count["min"]
     max_approved_client_count = min_max_approved_client_count["max"]
+    print(len(clients), len(ingredients), min_approved_client_count, max_approved_client_count)
     # print(len(clients), len(ingredients), min_approved_client_count, max_approved_client_count)
 
     # Count the approved client with the generated ingredients
@@ -387,6 +390,50 @@ def choose_ingredients_solver_with_chain_bis(clients, ingredients):
         for liked_ingredient in client.liked_ingredients:
             current_ingredients.add(liked_ingredient)
         approved_client_count += 1
+    approved_client_count = get_scoring(clients, current_ingredients)
+    return (current_ingredients, approved_client_count)
+
+
+def choose_ingredients_solver_with_chain_bis_2(clients, ingredients):
+    clients = list(set(clients))
+    ingredients = list(set(ingredients))
+
+    # random_func = lambda x, y: (x.id - y.id)
+    # random.shuffle(clients)
+
+    # sorted_func = lambda r: (len(r.disliked_ingredients))
+    # sorted_func = lambda r: (len(r.liked_ingredients) + len(r.disliked_ingredients))
+    # sorted_func = lambda r: (-len(r.liked_ingredients) + len(r.disliked_ingredients))
+    # clients = sorted(clients, key=sorted_func)
+
+    approved_client_count = 0
+    current_ingredients = set()
+    forbidden_ingredients = set()
+    for client in clients:
+        has_break = False
+        for disliked_ingredient in client.disliked_ingredients:
+            if disliked_ingredient in current_ingredients:
+                has_break = True
+                break
+
+        if has_break:
+            continue
+
+        for liked_ingredient in client.liked_ingredients:
+            if liked_ingredient in forbidden_ingredients:
+                has_break = True
+                break
+
+        if has_break:
+            continue
+
+        for disliked_ingredient in client.disliked_ingredients:
+            forbidden_ingredients.add(disliked_ingredient)
+
+        for liked_ingredient in client.liked_ingredients:
+            current_ingredients.add(liked_ingredient)
+        approved_client_count += 1
+    approved_client_count = get_scoring(clients, current_ingredients)
     return (current_ingredients, approved_client_count)
 
 
@@ -409,7 +456,7 @@ def main():
 
     try:
         (chosen_ingredients, potential_client_count) =\
-            choose_ingredients_solver_with_chain_bis(clients, ingredients)
+            choose_ingredients_solver_with_chain_bis_2(clients, ingredients)
     except KeyboardInterrupt:
         pass
 
