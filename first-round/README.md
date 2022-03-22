@@ -5,10 +5,12 @@ Rank : 1476
 ## A - An Example
 
 * 30 pt 😀
+* 33 pt (Practice Mode)
 
 ## B - Better start small
 
 * 275 518 pt 😞
+* 742 958 pt (Practice Mode)
 
 ## C - Collaboration
 
@@ -17,6 +19,7 @@ Rank : 1476
 ## D - Dense Schedule
 
 * 45 860 pt 😞
+* 91 424 pt (Practice Mode)
 
 ## E - Exceptional Skills
 
